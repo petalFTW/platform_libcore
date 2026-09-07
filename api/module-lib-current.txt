@@ -222,9 +222,11 @@ package dalvik.system {
   public final class DelegateLastClassLoader extends dalvik.system.PathClassLoader {
     ctor public DelegateLastClassLoader(String, String, ClassLoader, ClassLoader[]);
     ctor public DelegateLastClassLoader(String, String, ClassLoader, ClassLoader[], ClassLoader[]);
+    field public static java.util.function.BiFunction<java.lang.String,java.lang.Boolean,java.lang.String> modifyClassLoaderPathHook;
   }
 
   public final class DexFile {
+    method public static void enableDynCodeLoadingChecks(int);
     method @Deprecated @NonNull public static dalvik.system.DexFile.OptimizationInfo getDexFileOptimizationInfo(@NonNull String, @NonNull String) throws java.io.FileNotFoundException;
     method @Nullable public static String[] getDexFileOutputPaths(@NonNull String, @NonNull String) throws java.io.FileNotFoundException;
     method @Deprecated public static int getDexOptNeeded(@NonNull String, @NonNull String, @NonNull String, @Nullable String, boolean, boolean) throws java.io.FileNotFoundException, java.io.IOException;
@@ -406,6 +408,11 @@ package dalvik.system {
 
 package java.io {
 
+  public class File implements java.lang.Comparable<java.io.File> java.io.Serializable {
+    field public static java.util.function.ToLongFunction<java.io.File> lastModifiedHook;
+    field public static java.util.function.Consumer<java.io.File> mkdirsFailedHook;
+  }
+
   public final class FileDescriptor {
     method public int getInt$();
     method public void setInt$(int);
@@ -557,6 +564,10 @@ package java.text {
 
 package java.util {
 
+  public final class Arrays {
+    field public static java.util.function.UnaryOperator<java.lang.Object[]> asListHook;
+  }
+
   public class LinkedHashMap<K, V> extends java.util.HashMap<K,V> implements java.util.Map<K,V> java.util.SequencedMap<K,V> {
     method public java.util.Map.Entry<K,V> eldest();
   }
@@ -634,6 +645,11 @@ package libcore.io {
     method @NonNull public static java.io.FileDescriptor open(@NonNull String, int) throws java.io.FileNotFoundException;
     method public static int read(@NonNull java.io.FileDescriptor, @NonNull byte[], int, int) throws java.io.IOException;
     method public static void write(@NonNull java.io.FileDescriptor, @NonNull byte[], int, int) throws java.io.IOException;
+    field @Nullable public static libcore.io.IoBridge.OpenFdInterceptor openFdInterceptor;
+  }
+
+  public static interface IoBridge.OpenFdInterceptor {
+    method @Nullable public java.io.FileDescriptor maybeInterceptOpenFd(@NonNull String, int) throws android.system.ErrnoException;
   }
 
   public final class IoUtils {
